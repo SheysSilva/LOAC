@@ -32,130 +32,110 @@ always_comb begin
 	
 
 end
+int nota;
+logic situacao;
 always_comb begin
-	int numero1;
-	int numero2;
-	int numero;
-	logic sinal1;
-	logic sinal2;
-	logic sinal;
-	logic carry_1;
-	logic carry_2;
-	logic carry_3;
-	logic carry_4;
-	logic R;
+	nota <= SWI[3:0];
+	situacao <= SWI[7];
 	
-	sinal1 <= SWI[3];
-	sinal2 <= SWI[7];
-	numero1 <= SWI[2:0];
-	numero2 <= SWI[6:4];
-	
-	if(sinal1 == sinal2) begin
-		sinal <= sinal1;
-		numero <= numero1 + numero2;
-	end
-	else if(numero1 > numero2) begin
-		sinal <= sinal1;
-		numero <= numero1 - numero2;
-	end
-	else begin 
-		sinal <= sinal2;
-		numero <= numero2 - numero1;
-	end
-	SEG[7] <= sinal;	
-	LED[3:0] <= numero;
-
-	
-	carry_1 <= SWI[0] & SWI[4];
-	case(carry_1)
-		1: begin
-			R <= SWI[1] ^ carry_1;
-			carry_2 <= (SWI[1] & carry_1) | (SWI[5] & R);
-		end
-		0: begin
-
-			carry_2 <= SWI[1] & SWI[5];
-		end
-	endcase
-	case(carry_2)
-		1: begin
-			R <= SWI[2] ^ carry_2;
-			carry_3 <= (SWI[2] & carry_2) | (SWI[6] & R);
-		end
-		0: begin
-			carry_3 <= SWI[2] & SWI[6];
-		end
-	endcase
-	LED[7] <= carry_3;
-
-	case(numero)
-		0: begin
-			SEG[0] <= 1;
-			SEG[1] <= 1;
-			SEG[2] <= 1;
-			SEG[3] <= 1;
-			SEG[4] <= 1;
-			SEG[5] <= 1;
-			SEG[6] <= 0;
-		end
-		1: begin
+	if(situacao == 1) begin
+		if(nota >= 7) begin
 			SEG[0] <= 0;
-			SEG[1] <= 1;
-			SEG[2] <= 1;
-			SEG[6:3] <= 0;
-		end		
-		2: begin	
-			SEG[0] <= 1;
-			SEG[1] <= 1;
+			SEG[1] <= 0;
 			SEG[2] <= 0;
 			SEG[3] <= 1;
-			SEG[4] <= 1;
-			SEG[5] <= 0;
-			SEG[6] <= 1;
-		end	
-		3: begin	
-			SEG[0] <= 1;
-			SEG[1] <= 1;
-			SEG[2] <= 1;
-			SEG[3] <= 1;
 			SEG[4] <= 0;
 			SEG[5] <= 0;
-			SEG[6] <= 1;
+			SEG[6] <= 0;
 		end
-		4: begin
+		else if(nota >= 4 & nota < 7)begin
 			SEG[0] <= 0;
 			SEG[1] <= 1;
 			SEG[2] <= 1;
-			SEG[3] <= 0;
+			SEG[3] <= 1;
 			SEG[4] <= 0;
-			SEG[5] <= 1;
-			SEG[6] <= 1;
+			SEG[5] <= 0;
+			SEG[6] <= 0;
 		end
-		5: begin
-			SEG[0] <= 1;
+		else begin
+			SEG[0] <= 0;
 			SEG[1] <= 0;
 			SEG[2] <= 1;
 			SEG[3] <= 1;
 			SEG[4] <= 0;
-			SEG[5] <= 1;
-			SEG[6] <= 1;
+			SEG[5] <= 0;
+			SEG[6] <= 0;
 		end
-		6: begin
-			SEG[0] <= 1;
-			SEG[1] <= 0;
-			SEG[2] <= 1;
-			SEG[3] <= 1;
-			SEG[4] <= 1;
-			SEG[5] <= 1;
-			SEG[6] <= 1;
-		end
-		7: begin
-			SEG[0] <= 1;
-			SEG[1] <= 1;
-			SEG[2] <= 1;
-			SEG[6:3] <= 0;
-		end
-		default: SEG[6:0] <= 0;
-	endcase
+	end
+	else begin
+		case(nota)
+			0: begin
+				SEG[0] <= 1;
+				SEG[1] <= 1;
+				SEG[2] <= 1;
+				SEG[3] <= 1;
+				SEG[4] <= 1;
+				SEG[5] <= 1;
+				SEG[6] <= 0;
+			end
+			1: begin
+				SEG[0] <= 0;
+				SEG[1] <= 1;
+				SEG[2] <= 1;
+				SEG[6:3] <= 0;
+			end		
+			2: begin	
+				SEG[0] <= 1;
+				SEG[1] <= 1;
+				SEG[2] <= 0;
+				SEG[3] <= 1;
+				SEG[4] <= 1;
+				SEG[5] <= 0;
+				SEG[6] <= 1;
+			end	
+			3: begin	
+				SEG[0] <= 1;
+				SEG[1] <= 1;
+				SEG[2] <= 1;
+				SEG[3] <= 1;
+				SEG[4] <= 0;
+				SEG[5] <= 0;
+				SEG[6] <= 1;
+			end
+			4: begin
+				SEG[0] <= 0;
+				SEG[1] <= 1;
+				SEG[2] <= 1;
+				SEG[3] <= 0;
+				SEG[4] <= 0;
+				SEG[5] <= 1;
+				SEG[6] <= 1;
+			end
+			5: begin
+				SEG[0] <= 1;
+				SEG[1] <= 0;
+				SEG[2] <= 1;
+				SEG[3] <= 1;
+				SEG[4] <= 0;
+				SEG[5] <= 1;
+				SEG[6] <= 1;
+			end
+			6: begin
+				SEG[0] <= 1;
+				SEG[1] <= 0;
+				SEG[2] <= 1;
+				SEG[3] <= 1;
+				SEG[4] <= 1;
+				SEG[5] <= 1;
+				SEG[6] <= 1;
+			end
+			7: begin
+				SEG[0] <= 1;
+				SEG[1] <= 1;
+				SEG[2] <= 1;
+				SEG[6:3] <= 0;
+			end
+			default: SEG[6:0] <= 0;
+		endcase
 	end
 endmodule
